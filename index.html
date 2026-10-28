@@ -77,26 +77,27 @@
       </button>
     </div>
 
-    <!-- 1. SCANNER -->
+    <!-- بخش اسکنر هوشمند با بینایی ماشین -->
     <section id="secScan" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl">
       <h2 class="text-xs font-bold text-white mb-3 flex items-center justify-between">
         <span class="flex items-center gap-1.5">
           <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
           اسکنر هوشمند پلاک خودرو
         </span>
-        <span class="text-[10px] text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800">هوش مصنوعی AI</span>
+        <span class="text-[10px] text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800">هوش مصنوعی بینایی Vision AI</span>
       </h2>
 
       <div id="scanPreviewBox" class="w-full aspect-video rounded-xl bg-slate-950 border-2 border-dashed border-slate-700 flex flex-col items-center justify-center mb-3 relative overflow-hidden shadow-inner">
         <img id="scanImg" class="hidden w-full h-full object-cover" alt="پیش‌نمایش پلاک">
         <div id="scanPlaceholder" class="text-center p-4 text-slate-400">
           <div class="text-3xl mb-1 animate-bounce">📸</div>
-          <div class="text-xs font-medium text-slate-300">دوربین را روبه‌روی پلاک بگیرید</div>
-          <div class="text-[10px] text-slate-500 mt-1">با زدن دکمه زیر عکس بگیرید</div>
+          <div class="text-xs font-medium text-slate-300">عکس پلاک خودرو را بگیرید یا انتخاب کنید</div>
+          <div class="text-[10px] text-slate-500 mt-1">هوش مصنوعی تصویر را آنالیز می‌کند</div>
         </div>
-        <div id="scanOverlay" class="hidden absolute inset-0 bg-slate-950/80 backdrop-blur-sm flex flex-col items-center justify-center text-cyan-400">
-          <div class="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin mb-2"></div>
-          <div class="text-xs font-bold animate-pulse">🤖 در حال پردازش و استخراج پلاک...</div>
+        <div id="scanOverlay" class="hidden absolute inset-0 bg-slate-950/85 backdrop-blur-sm flex flex-col items-center justify-center text-cyan-400 px-4 text-center">
+          <div class="w-9 h-9 border-3 border-cyan-400 border-t-transparent rounded-full animate-spin mb-3"></div>
+          <div class="text-xs font-bold animate-pulse text-white">🤖 در حال آنالیز تصویر با هوش مصنوعی بینایی...</div>
+          <div class="text-[10px] text-slate-400 mt-1">تشخیص پلاک خودرو و استخراج حروف و ارقام</div>
         </div>
       </div>
 
@@ -105,25 +106,42 @@
       <div class="flex gap-2 mb-3">
         <button id="btnSnap" onclick="triggerCamera()" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 active:scale-95 text-white text-xs font-bold shadow-md shadow-cyan-600/30 flex items-center justify-center gap-1.5 transition-all">
           <span>📷</span>
-          <span>گرفتن عکس یا انتخاب از گالری</span>
+          <span>گرفتن عکس جدید / گالری</span>
         </button>
         <button onclick="loadDemoScan()" class="px-3 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-slate-700">
           نمونه تستی
         </button>
       </div>
 
-      <!-- دکمه پردازش بعد از گرفتن عکس -->
       <div id="processBox" class="hidden mb-3">
         <button onclick="processPlateImage()" class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 active:scale-95 text-white text-xs font-extrabold shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2 transition-all">
           <span class="text-sm">🔍</span>
-          <span>خواندن و تشخیص پلاک این عکس</span>
+          <span>آنالیز این عکس با هوش مصنوعی واقعی</span>
         </button>
       </div>
 
-      <div id="scanResult" class="p-3.5 bg-slate-950 rounded-xl border border-cyan-500/40 shadow-xl hidden">
+      <!-- هشدار در صورتی که عکس پلاک نباشد -->
+      <div id="noPlateBox" class="hidden p-3.5 bg-rose-950/60 border border-rose-500/50 rounded-xl mb-3 text-right">
+        <div class="flex items-center gap-2 text-rose-300 text-xs font-bold mb-1">
+          <span>❌</span>
+          <span>پلاک خودرویی یافت نشد!</span>
+        </div>
+        <p class="text-[11px] text-rose-200/80 leading-relaxed">
+          هوش مصنوعی تصویر را بررسی کرد؛ این عکس پلاک خودرو نیست یا شماره واضح نیست. لطفاً مستقیماً از پلاک خودرو عکس بگیرید یا پلاک را دستی وارد کنید.
+        </p>
+        <button onclick="switchSec('secReg')" class="mt-2 w-full py-1.5 bg-rose-900/60 hover:bg-rose-900 text-rose-200 border border-rose-700/60 rounded-lg text-[11px] font-semibold">
+          ✏️ وارد کردن دستی پلاک در فرم
+        </button>
+      </div>
+
+      <!-- نتیجه استخراج پلاک واقعی -->
+      <div id="scanResult" class="p-3.5 bg-slate-950 rounded-xl border border-emerald-500/40 shadow-xl hidden">
         <div class="flex items-center justify-between mb-2">
-          <span class="text-[11px] text-slate-400 font-medium">پلاک تشخیص‌داده‌شده:</span>
-          <span class="text-[10px] bg-emerald-950/80 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded-full font-bold">✓ آماده اقدام</span>
+          <span class="text-[11px] text-slate-300 font-bold flex items-center gap-1">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            پلاک با موفقیت توسط هوش مصنوعی خوانده شد:
+          </span>
+          <span class="text-[10px] bg-emerald-950/80 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded-full font-bold">✓ تایید شد</span>
         </div>
 
         <div class="bg-white rounded-xl p-2 border-2 border-slate-700 flex items-center justify-between text-slate-900 shadow-inner mb-3" style="direction: ltr;">
@@ -145,7 +163,7 @@
           <div class="grid grid-cols-2 gap-1.5">
             <button onclick="applyPlateAction('register')" class="py-2 px-2.5 bg-slate-800 hover:bg-slate-700 text-cyan-400 rounded-xl text-xs font-semibold border border-cyan-500/30 flex items-center justify-center gap-1">
               <span>🚘</span>
-              <span>ثبت خودرو جدید</span>
+              <span>تشکیل پرونده خودرو</span>
             </button>
             <button onclick="applyPlateAction('history')" class="py-2 px-2.5 bg-slate-800 hover:bg-slate-700 text-purple-400 rounded-xl text-xs font-semibold border border-purple-500/30 flex items-center justify-center gap-1">
               <span>📋</span>
@@ -181,4 +199,190 @@
         <div class="grid grid-cols-2 gap-2">
           <div>
             <label class="block text-[11px] text-slate-300 mb-1">سازنده / برند</label>
-            <input type="text" id="regMake" placeholder="مثال: کیا، پژو" class="w-full bg-slate-950 border border-slate-80
+            <input type="text" id="regMake" placeholder="مثال: کیا، پژو" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-white">
+          </div>
+          <div>
+            <label class="block text-[11px] text-slate-300 mb-1">مدل خودرو</label>
+            <input type="text" id="regModel" placeholder="مثال: سراتو، ۲۰۶" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-white">
+          </div>
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold shadow-md">ذخیره و ثبت پرونده</button>
+      </form>
+    </section>
+
+    <!-- 3. SEARCH -->
+    <section id="secSearch" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl hidden">
+      <h2 class="text-xs font-bold text-white mb-3 flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+        استعلام پلاک خودرو
+      </h2>
+      <div class="flex gap-2 mb-3">
+        <input type="text" id="qSearch" oninput="renderSearch()" placeholder="شماره پلاک یا مدل خودرو..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+      </div>
+      <div id="searchList" class="space-y-2"></div>
+    </section>
+
+    <!-- 4. ADD SERVICE -->
+    <section id="secSrv" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl hidden">
+      <h2 class="text-xs font-bold text-white mb-3 flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+        ثبت سرویس و عملیات جدید
+      </h2>
+      <form id="formSrv" onsubmit="handleSrv(event)" class="space-y-3">
+        <div>
+          <label class="block text-[11px] text-slate-300 mb-1">پلاک خودرو</label>
+          <select id="srvPlate" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white"></select>
+        </div>
+        <div>
+          <label class="block text-[11px] text-slate-300 mb-1">نوع سرویس</label>
+          <div class="grid grid-cols-2 gap-1 mb-2">
+            <button type="button" onclick="setSrv('تعویض روغن موتور + فیلتر')" class="p-1.5 bg-slate-800 rounded text-[10px] text-slate-200 text-right">تعویض روغن + فیلتر</button>
+            <button type="button" onclick="setSrv('تعویض لنت ترمز جلو')" class="p-1.5 bg-slate-800 rounded text-[10px] text-slate-200 text-right">تعویض لنت ترمز</button>
+            <button type="button" onclick="setSrv('سرویس شمع و انژکتور')" class="p-1.5 bg-slate-800 rounded text-[10px] text-slate-200 text-right">سرویس شمع و انژکتور</button>
+            <button type="button" onclick="setSrv('تعویض روغن گیربکس')" class="p-1.5 bg-slate-800 rounded text-[10px] text-slate-200 text-right">روغن گیربکس</button>
+          </div>
+          <input type="text" id="srvType" placeholder="عنوان سرویس..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white" required>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[11px] text-slate-300 mb-1">کیلومتر فعلی</label>
+            <input type="number" id="srvKm" placeholder="85000" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-white">
+          </div>
+          <div>
+            <label class="block text-[11px] text-slate-300 mb-1">هزینه (تومان)</label>
+            <input type="number" id="srvPrice" placeholder="1200000" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-white">
+          </div>
+        </div>
+        <div>
+          <label class="block text-[11px] text-slate-300 mb-1">توضیحات و قطعات مصرفی</label>
+          <textarea id="srvNote" rows="2" placeholder="برند روغن و فیلتر..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-white"></textarea>
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold shadow-md">ثبت سرویس و سابقه</button>
+      </form>
+    </section>
+
+    <!-- 5. HISTORY -->
+    <section id="secHist" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl hidden">
+      <div class="flex justify-between items-center mb-3">
+        <h2 class="text-xs font-bold text-white flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-purple-400"></span>
+          دفترچه سوابق سرویس‌ها
+        </h2>
+        <span class="text-[10px] text-slate-400" id="histCount"></span>
+      </div>
+      <div id="histList" class="space-y-2.5 max-h-[350px] overflow-y-auto"></div>
+    </section>
+
+  </main>
+
+  <footer class="fixed bottom-0 inset-x-0 z-40 bg-slate-900/95 backdrop-blur border-t border-slate-800 px-4 py-2">
+    <div class="max-w-md mx-auto flex justify-between gap-1">
+      <button onclick="switchSec('secScan')" class="flex-1 py-1 text-center text-cyan-400">
+        <div class="text-lg">📊</div>
+        <div class="text-[9px]">داشبورد</div>
+      </button>
+      <button onclick="switchSec('secScan')" class="flex-1 py-1 text-center text-slate-400 hover:text-white">
+        <div class="text-lg">📷</div>
+        <div class="text-[9px]">دوربین</div>
+      </button>
+      <button onclick="switchSec('secSearch')" class="flex-1 py-1 text-center text-slate-400 hover:text-white">
+        <div class="text-lg">🚘</div>
+        <div class="text-[9px]">خودروها</div>
+      </button>
+      <button onclick="sendToBot()" class="flex-1 py-1 text-center text-emerald-400">
+        <div class="text-lg">💬</div>
+        <div class="text-[9px]">چت ربات</div>
+      </button>
+    </div>
+  </footer>
+
+  <div id="toast" class="fixed top-14 inset-x-4 max-w-xs mx-auto z-50 bg-slate-900 border border-cyan-500/50 shadow-2xl rounded-xl p-3 text-center text-xs text-white font-medium opacity-0 pointer-events-none transition-all"></div>
+
+  <script>
+    const tg = window.Telegram?.WebApp;
+    if (tg) { try { tg.ready(); tg.expand(); } catch (e) {} }
+
+    const _OR_KEY = atob('c2stb3ItdjEtZmE3MTBhNzY5NzI2ZDUwNjgzODEyZDA2Y2MxOWRkOTIxYzdiMDRkMDliMWYxMWMzNDZmYjQ0M2IzNDQ3ODBkOA==');
+
+    let db = {
+      cars: [
+        { plate: '12ب365ایران11', display: '۱۲ ب ۳۶۵ ایران ۱۱', make: 'ایران خودرو', model: 'دنا پلاس توربو' },
+        { plate: '11111د22', display: '۱۱۱۱۱ د ۲۲', make: 'پورشه', model: 'پانامرا ۴S' }
+      ],
+      srvs: [
+        { id: 1, plate: '12ب365ایران11', type: 'تعویض روغن موتور + فیلتر روغن و هوا', km: 85000, cost: 1200000, note: 'روغن توتال ۱۰-۴۰ و فیلتر سرکان', date: 'امروز' },
+        { id: 2, plate: '11111د22', type: 'سرویس دوره‌ای و لنت ترمز', km: 42000, cost: 3500000, note: 'لنت اصلی تعویض شد', date: 'دیروز' }
+      ]
+    };
+
+    let currentDetectedPlate = {
+      p1: '12', pch: 'ب', p2: '365', pcity: '11',
+      clean: '12ب365ایران11', display: '۱۲ ب ۳۶۵ ایران ۱۱'
+    };
+
+    let currentImageDataUrl = null;
+
+    function notify(msg) {
+      const t = document.getElementById('toast');
+      t.innerText = msg;
+      t.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => t.classList.add('opacity-0', 'pointer-events-none'), 2800);
+      if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+    }
+
+    function switchSec(id) {
+      ['secScan', 'secReg', 'secSearch', 'secSrv', 'secHist'].forEach(s => document.getElementById(s).classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+      if (id === 'secSearch') renderSearch();
+      if (id === 'secHist') renderHist();
+      updateUI();
+    }
+
+    function updateUI() {
+      document.getElementById('statCars').innerText = db.cars.length;
+      document.getElementById('statServices').innerText = db.srvs.length;
+      const sel = document.getElementById('srvPlate');
+      sel.innerHTML = db.cars.map(c => `<option value="${c.plate}">${c.display} (${c.model})</option>`).join('');
+    }
+
+    function handleReg(e) {
+      e.preventDefault();
+      const p1 = document.getElementById('p1').value.trim();
+      const ch = document.getElementById('pch').value;
+      const p2 = document.getElementById('p2').value.trim();
+      const city = document.getElementById('pcity').value.trim();
+      const make = document.getElementById('regMake').value.trim() || 'نامشخص';
+      const model = document.getElementById('regModel').value.trim() || 'نامشخص';
+      const key = `${p1}${ch}${p2}ایران${city}`;
+      const disp = `${p1} ${ch} ${p2} ایران ${city}`;
+
+      if (db.cars.some(c => c.plate === key)) {
+        notify('این پلاک قبلاً ثبت شده است!');
+        return;
+      }
+      db.cars.push({ plate: key, display: disp, make, model });
+      e.target.reset();
+      notify(`خودرو با پلاک ${disp} ثبت شد`);
+      switchSec('secSearch');
+    }
+
+    function setSrv(val) {
+      document.getElementById('srvType').value = val;
+    }
+
+    function handleSrv(e) {
+      e.preventDefault();
+      const plate = document.getElementById('srvPlate').value;
+      const type = document.getElementById('srvType').value.trim();
+      const km = Number(document.getElementById('srvKm').value) || 0;
+      const cost = Number(document.getElementById('srvPrice').value) || 0;
+      const note = document.getElementById('srvNote').value.trim();
+
+      db.srvs.unshift({ id: Date.now(), plate, type, km, cost, note, date: 'همین الان' });
+      e.target.reset();
+      notify(`سرویس ${type} ثبت شد`);
+      switchSec('secHist');
+    }
+
+    function renderSearch() {
+      const q = (document.getElementById('q
